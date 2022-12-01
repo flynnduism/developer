@@ -1,6 +1,7 @@
 title = "Install Spin"
 template = "spin_main"
 date = "2022-03-14T00:22:56Z"
+enable_shortcodes = true
 [extra]
 keywords = "install"
 
@@ -13,20 +14,78 @@ Spin runs on Linux (amd64), macOS (Intel and Apple Silicon) and Windows with WSL
 There are multiple ways to install Spin. The easiest is to use the installer script, hosted on this site.
 
 This command will install the latest version of Spin in you current directory.
+{{ tabs "Os" }}
+
+{{ startTab "Windows"}}
+
+To list files on windows use `dir`
 
 <!-- @selectiveCpy -->
 
 ```bash
-$ curl -fsSL https://developer.fermyon.com/downloads/install.sh | bash
+$ dir hello_fermyon
+```
+and script in windows have the extension `.bat`
+
+<!-- @nocpy -->
+
+```bash
+hello.bat
+test.bat
 ```
 
-It's highly recommended to add Spin to a folder, which is on your path, e.g.:
+{{ blockEnd }}
+
+{{ startTab "Linux"}}
+
+To list files on linux use `ls`
 
 <!-- @selectiveCpy -->
 
 ```bash
-$ sudo mv spin /usr/local/bin/
+$ ls
 ```
+
+and script in windows have the extension `.sh`
+
+<!-- @nocpy -->
+
+```bash
+hello.sh
+test.sh
+```
+
+{{ blockEnd }}
+{{ blockEnd }}
+
+Now with some code examples
+
+{{ tabs "code" }}
+{{ startTab "Rust" }}
+
+```rust
+println!("hello fermyon");
+```
+
+{{ blockEnd }}
+
+{{ startTab "Python" }}
+
+```python
+print("hello fermyon");
+```
+
+{{ blockEnd }}
+
+{{ startTab "Javascript" }}
+
+```javascript
+console.log("hello fermyon")
+```
+
+{{ blockEnd }}
+{{ blockEnd }}
+
 
 ## Linux: Additional Libraries
 
@@ -35,11 +94,75 @@ On a fresh Linux installation, you will also need the standard build toolchain
 
 On Debian-like distributions, including Ubuntu, you can install these with a command like this:
 
+{{ tabs "os" }}
+
+{{ startTab "Windows"}}
+
+To list files on windows use `dir`
+
 <!-- @selectiveCpy -->
 
 ```bash
-$ sudo apt-get install build-essential libssl-dev pkg-config
+$ dir hello_fermyon
 ```
+and script in windows have the extension `.bat`
+
+<!-- @nocpy -->
+
+```bash
+hello.bat
+test.bat
+```
+
+{{ blockEnd }}
+
+{{ startTab "Linux"}}
+
+To list files on linux use `ls`
+
+<!-- @selectiveCpy -->
+
+```bash
+$ ls
+```
+
+and script in windows have the extension `.sh`
+
+<!-- @nocpy -->
+
+```bash
+hello.sh
+test.sh
+```
+
+{{ blockEnd }}
+{{ blockEnd }}
+
+{{ tabs "code" }}
+{{ startTab "Rust" }}
+
+```rust
+println!("hello fermyon");
+```
+
+{{ blockEnd }}
+
+{{ startTab "Python" }}
+
+```python
+print("hello fermyon");
+```
+
+{{ blockEnd }}
+
+{{ startTab "Javascript" }}
+
+```javascript
+console.log("hello fermyon")
+```
+
+{{ blockEnd }}
+{{ blockEnd }}
 
 ## Installing a specific version of Spin
 
@@ -70,6 +193,8 @@ $ git clone https://github.com/fermyon/spin
 $ cd spin && make build
 $ ./target/release/spin --help
 ```
+
+
 
 ## Using Cargo to install Spin
 
