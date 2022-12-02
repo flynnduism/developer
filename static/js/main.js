@@ -1073,14 +1073,16 @@ class codeblockLanguageTab {
     }
 }
 class multiTabBlockHandler {
-    constructor(nodes, tabClass, parentCallback){
+    constructor(nodes, tabClass, activeValue, parentCallback){
         this.tabClass = tabClass;
         this.parentCallback = parentCallback;
-        this.active = 0;
+        // this.active = 0
         this.nodes = Array.from(nodes);
         this.langs = this.nodes.map((k)=>{
             return k.dataset.title;
         });
+        this.active = this.langs.indexOf(activeValue);
+        this.active = this.active > 0 ? this.active : 0;
         this.tabs = list("ul", codeblockLanguageTab, null, this.ChildEventHandler.bind(this));
         this.el = el("div.tabs.is-boxed", this.tabs);
         this.tabs.update(this.langs, {
@@ -1093,7 +1095,7 @@ class multiTabBlockHandler {
             active: data
         });
         this.updateTabContent(data);
-        this.parentCallback(this.tabClass, this.langs[data]);
+        this.parentCallback(this.tabClass, this.langs[data], true);
     }
     updateTabContent(data) {
         for(let i = 0; i < this.nodes.length; i++)setStyle(this.nodes[i], {
@@ -1101,7 +1103,10 @@ class multiTabBlockHandler {
         });
     }
     globalTabUpdate(data) {
+        console.log("global update", data);
         let activeIndex = this.langs.indexOf(data);
+        console.log(activeIndex);
+        if (activeIndex < 0) return;
         this.tabs.update(this.langs, {
             active: activeIndex
         });
@@ -1110,7 +1115,7 @@ class multiTabBlockHandler {
 }
 class multiTabContentHandler {
     constructor(){
-        this.selectedTab = {
+        this.selectedTab = JSON.parse(localStorage.getItem("toggleTabSelections")) || {
             os: null,
             code: null
         };
@@ -1120,14 +1125,27 @@ class multiTabContentHandler {
             let tabs = multiTabBlock.querySelectorAll("div.multitab-content");
             this.handler[index] = {};
             this.handler[index].class = multiTabBlock.dataset.class.toLowerCase();
-            this.handler[index].tabBlock = new multiTabBlockHandler(tabs, this.handler[index].class, this.updateTabs.bind(this));
+            this.handler[index].tabBlock = new multiTabBlockHandler(tabs, this.handler[index].class, this.selectedTab[this.handler[index].class], this.updateTabs.bind(this));
             multiTabBlock.insertBefore(this.handler[index].tabBlock.el, multiTabBlock.firstChild);
         });
+        Object.keys(this.selectedTab).map((k)=>{
+            if (this.selectedTab[k]) this.updateTabs(k, this.selectedTab[k], false);
+        });
+        window.addEventListener("storage", (e)=>{
+            if (e.key == "toggleTabSelections") Object.keys(this.selectedTab).map((k)=>{
+                this.selectedTab = JSON.parse(localStorage.getItem("toggleTabSelections")) || this.selectedTab;
+                if (this.selectedTab[k]) this.updateTabs(k, this.selectedTab[k], false);
+            });
+        });
     }
-    updateTabs(tabClass, value) {
+    updateTabs(tabClass, value, updateLocalStorage) {
+        if (tabClass == "soloblock") return;
+        this.selectedTab[tabClass] = value;
+        console.log("setting value", value);
         this.handler.map((k)=>{
             if (k.class == tabClass) k.tabBlock.globalTabUpdate(value);
         });
+        if (updateLocalStorage) localStorage.setItem("toggleTabSelections", JSON.stringify(this.selectedTab));
     }
 }
 
